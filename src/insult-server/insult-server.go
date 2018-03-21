@@ -1,14 +1,14 @@
 package main
 
 import (
-	"math/rand"
 	"fmt"
-	"time"
-	"net/http"
 	"log"
+	"math/rand"
+	"net/http"
+	"time"
 )
 
-var principals = []string {
+var principals = []string{
 	"bampot",
 	"bawbag",
 	"clipe",
@@ -24,7 +24,7 @@ var adjectives = []string{
 	"howlin",
 }
 
-var actions = []string {
+var actions = []string{
 	"Awa' n boil yer head",
 	"Shut yer gob",
 	"Yer aff yer heid",
@@ -41,7 +41,7 @@ func gen_insult() string {
 		choose_from(actions),
 		choose_from(adjectives),
 		choose_from(principals),
-		)
+	)
 }
 
 func insultHandler(w http.ResponseWriter, r *http.Request) {
