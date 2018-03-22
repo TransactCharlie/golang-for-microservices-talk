@@ -51,6 +51,7 @@ func insultHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// Init the random seed
 	rand.Seed(time.Now().Unix())
-	http.HandleFunc("/insult", insultHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/insult", insultHandler)
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
