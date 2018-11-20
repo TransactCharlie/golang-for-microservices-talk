@@ -1,18 +1,19 @@
 package main
 
 import (
-	"flag"
-	"sync"
 	"context"
+	"flag"
+	"fmt"
 	"golang.org/x/sync/semaphore"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"io/ioutil"
-	"fmt"
+	"sync"
 )
 
 var concurrentConnections int
 var numRequests int
+var netClient = &http.Client{}
 
 func init() {
 	flag.IntVar(&concurrentConnections, "c", 1, "Max Concurrent Connections")
@@ -21,7 +22,7 @@ func init() {
 }
 
 func getInsult() string {
-	resp, err := http.Get("http://localhost:8080/insult")
+	resp, err := netClient.Get("http://localhost:8080/insult")
 	if err != nil {
 		log.Printf("Error getting insult: %v", err)
 		return err.Error()
@@ -38,13 +39,21 @@ func getInsult() string {
 	return string(body)
 }
 
+func init() {
+	tr := &http.Transport{
+		MaxIdleConns:        concurrentConnections,
+		MaxIdleConnsPerHost: concurrentConnections,
+	}
+	netClient = &http.Client{Transport: tr}
+}
+
 func main() {
 
 	ctx := context.TODO()
 
 	var (
-		sem = semaphore.NewWeighted(int64(concurrentConnections))
-		out = make([]string, numRequests)
+		sem         = semaphore.NewWeighted(int64(concurrentConnections))
+		out         = make([]string, numRequests)
 		workerGroup sync.WaitGroup
 	)
 
@@ -69,7 +78,7 @@ func main() {
 	workerGroup.Wait()
 	fmt.Print("\n")
 	// Show the Insults
-	for i := range(out) {
+	for i := range out {
 		fmt.Println(out[i])
 	}
 }
