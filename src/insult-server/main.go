@@ -30,22 +30,17 @@ var actions = []string{
 	"Yer aff yer heid",
 }
 
-func choose_from(s []string) string {
+func choose(s []string) string {
 	return s[rand.Intn(len(s))]
 }
 
-func gen_insult() string {
+func genInsult() string {
 	time.Sleep(time.Second)
-	return fmt.Sprintf(
-		"%s ya %s %s\n",
-		choose_from(actions),
-		choose_from(adjectives),
-		choose_from(principals),
-	)
+	return fmt.Sprintf("%s ya %s %s\n",  choose(actions),  choose(adjectives), choose(principals))
 }
 
 func insultHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, gen_insult())
+	fmt.Fprintf(w, genInsult())
 }
 
 func main() {
